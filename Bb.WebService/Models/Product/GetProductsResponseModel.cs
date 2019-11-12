@@ -10,6 +10,6 @@ namespace Bb.WebService.Models
     public class GetProductsResponseModel : BaseResponseModel
     {
         [JsonProperty("products")]
-        public IEnumerable<Product> Products { get; set; }
+        public IList<Product> Products { get; set; }
     }
 }

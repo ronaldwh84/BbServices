@@ -9,8 +9,13 @@ namespace Bb.Data.Repository
 {
     public interface IProductRepository
     {
-        bool BulkCreate(IEnumerable<Product> products);
+        int BulkCreate(IEnumerable<Product> products);
+
+        int BulkDelete(IEnumerable<long> productIds);
 
         IEnumerable<Product> GetProducts(IEnumerable<long> productIds);
+
+        int DeleteAll();
+
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Bb.Data.Repository.Ef
 {
@@ -15,30 +16,37 @@ namespace Bb.Data.Repository.Ef
             _dbContext = new BbContext();
         }
 
-        public bool BulkCreate(IEnumerable<Product> products)
+        public int BulkCreate(IEnumerable<Product> products)
         {
-            try
+            _dbContext.Products.AddRange(products);
+            return _dbContext.SaveChanges();
+        }
+
+        public int BulkDelete(IEnumerable<long> productIds)
+        {
+            var totalDeletedProductsCount = 0;
+            var iteration = 1;
+            var batchCount = 2000;
+            var proccessedIds = productIds.Take(batchCount);
+            do
             {
-                _dbContext.Products.AddRange(products);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+                totalDeletedProductsCount += _dbContext.Products.Where(p => proccessedIds.Contains(p.Id)).Delete();
+                proccessedIds = productIds.Skip(iteration * batchCount).Take(batchCount);
+                iteration++;
+
+            } while (proccessedIds.Count() > 0);
+
+            return totalDeletedProductsCount;
         }
 
         public IEnumerable<Product> GetProducts(IEnumerable<long> productIds)
         {
-            try
-            {
-                return _dbContext.Products;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return _dbContext.Products.Where(p => productIds.Contains(p.Id));
+        }
+
+        public int DeleteAll()
+        {
+            return _dbContext.Products.Delete();
         }
     }
 }

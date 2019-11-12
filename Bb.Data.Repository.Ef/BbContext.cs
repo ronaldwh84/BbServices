@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bb.Data
+namespace Bb.Data.Repository.Ef
 {
     public class BbContext : DbContext
     {

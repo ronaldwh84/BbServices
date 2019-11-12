@@ -13,5 +13,8 @@ namespace Bb.WebService.Models
 
         [JsonProperty("timestamp")]
         public DateTime Timestamp { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
     }
 }
