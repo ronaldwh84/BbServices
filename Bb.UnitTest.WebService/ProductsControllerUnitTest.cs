@@ -47,7 +47,7 @@ namespace Bb.UnitTest.WebService
                     Sale_Amount = decimal.Parse(data[3])
                 });
             }
-            _productRepository.BulkCreate(products);
+            await _productRepository.BulkCreateAsync(products);
         }
 
         [TestMethod]
