@@ -15,7 +15,7 @@ This is a very simple web service for inserting and retrieving products informat
 * Set Bb.WebService as Startup Project.
 * Rebuild the solution.
 * Start the solution (by default it will open the IISExpress).
-* The web service will run under IISExpress with url 'http://localhost:5709/'
+* The web service will run under IISExpress with url 'http://localhost:5709/' with a blank page that showing a text 'Sorry, you have no access to this site.'
 
 *You may experience an issue where you see an error page with message 'Could not find file '...\BbServices\Bb.WebService\bin\roslyn\csc.exe'.' Simply clear, rebuild and start the solution again*
 
