@@ -15,6 +15,7 @@ This code is tested under localhost environment with SQL Express as the database
 * Open the BbServices.sln on Visual Studio.
 * Restore the solution's NuGet Packages.
 * Set Bb.WebService as Startup Project.
+* Clean the solution.
 * Rebuild the solution.
 * Start the solution (by default it will open the IISExpress).
 * The web service will run under IISExpress with url 'http://localhost:5709/' with a blank page that showing a text 'Sorry, you have no access to this site.'
