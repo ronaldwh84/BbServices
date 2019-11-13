@@ -74,6 +74,36 @@ namespace Bb.UnitTest.Repository.Ef
         }
 
         [TestMethod]
+        public async Task Put1ProductWithExistingId()
+        {
+            int count = 1;
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            await _productRepository.BulkCreateAsync(products);
+
+            try
+            {
+                await _productRepository.BulkCreateAsync(products);
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("Violation of PRIMARY KEY constraint"));
+            }
+        }
+
+        [TestMethod]
         public async Task Put10ProductsLessThen1Second()
         {
             int count = 10;
