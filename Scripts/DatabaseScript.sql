@@ -3,10 +3,7 @@ CREATE DATABASE [BbDb]
 GO
 
 /****** Object:  Table [dbo].[Product]    Script Date: 11/13/2019 12:19:10 PM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
+USE [BbDb]
 GO
 
 CREATE TABLE [dbo].[Product](
