@@ -9,13 +9,21 @@ namespace Bb.Data.Repository
 {
     public interface IProductRepository
     {
-        int BulkCreate(IEnumerable<Product> products);
+        void BulkCreate(IList<Product> products);
 
-        int BulkDelete(IEnumerable<long> productIds);
+        Task BulkCreateAsync(IList<Product> products);
 
-        IEnumerable<Product> GetProducts(IEnumerable<long> productIds);
+        void BulkDelete(IList<Product> products);
+
+        Task BulkDeleteAsync(IList<Product> products);
+
+        IList<Product> GetProducts(IList<long> productIds);
+
+        Task<IList<Product>> GetProductsAsync(IList<long> productIds);
 
         int DeleteAll();
+
+        Task<int> DeleteAllAsync();
 
     }
 }

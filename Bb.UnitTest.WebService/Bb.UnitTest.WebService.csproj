@@ -82,13 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="100000ProductsData.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="5ProductsData.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="10000ProductsData.csv">
+    <Content Include="ProductsData.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="app.config" />

@@ -10,6 +10,8 @@ using Bb.WebService.Models;
 using System.Web.Mvc;
 using Bb.Data.Repository;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bb.UnitTest.WebService
 {
@@ -20,37 +22,23 @@ namespace Bb.UnitTest.WebService
     public class ProductsControllerUnitTest
     {
         IProductRepository _productRepository;
+        IList<string> _dataRow;
+
         public ProductsControllerUnitTest()
         {
             //
             // TODO: Add constructor logic here
             //
             _productRepository = new ProductRepositoryEf();
+            _dataRow = File.ReadLines("ProductsData.csv").ToList();
         }
 
-        public void Initialize5Data()
+        public async Task InitializeDataAsync(int count)
         {
             List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
-                products.Add(new Product
-                {
-                    Id = long.Parse(data[0]),
-                    Name = data[1],
-                    Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
-                });
-            }
-            _productRepository.BulkCreate(products);
-        }
-
-        public void Initialize10000Data()
-        {
-            List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
-            {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -63,25 +51,26 @@ namespace Bb.UnitTest.WebService
         }
 
         [TestMethod]
-        public void Get5ProductsFromControllerLessThan1Second()
+        public async Task Get1ProductFromControllerLessThan1Second()
         {
-            Initialize5Data();
+            int count = 1;
+            await InitializeDataAsync(count);
 
             var productsController = new ProductsController(_productRepository);
             var requestModel = new GetProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0])
                 });
             }
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.GetProducts(requestModel);
+            JsonResult result = await productsController.GetProducts(requestModel);
             sw.Stop();
             GetProductsResponseModel responseModel = ((GetProductsResponseModel)result.Data);
 
@@ -96,25 +85,26 @@ namespace Bb.UnitTest.WebService
         }
 
         [TestMethod]
-        public void Get10000ProductsFromControllerLessThan1Second()
+        public async Task Get10000ProductsFromControllerLessThan1Second()
         {
-            Initialize10000Data();
+            int count = 10000;
+            await InitializeDataAsync(count);
 
             var productsController = new ProductsController(_productRepository);
             var requestModel = new GetProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0])
                 });
             }
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.GetProducts(requestModel);
+            JsonResult result = await productsController.GetProducts(requestModel);
             sw.Stop();
             GetProductsResponseModel responseModel = ((GetProductsResponseModel)result.Data);
 
@@ -129,16 +119,51 @@ namespace Bb.UnitTest.WebService
         }
 
         [TestMethod]
-        public void Put5ProductsFromControllerLessThan1Second()
+        public async Task Get100000ProductsFromControllerLessThan3Seconds()
         {
+            int count = 100000;
+            await InitializeDataAsync(count);
+
+            var productsController = new ProductsController(_productRepository);
+            var requestModel = new GetProductsRequestModel();
+            requestModel.Id = "123";
+            requestModel.Timestamp = DateTime.UtcNow;
+            requestModel.Products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                requestModel.Products.Add(new Product
+                {
+                    Id = long.Parse(data[0])
+                });
+            }
+            Stopwatch sw = Stopwatch.StartNew();
+            JsonResult result = await productsController.GetProducts(requestModel);
+            sw.Stop();
+            GetProductsResponseModel responseModel = ((GetProductsResponseModel)result.Data);
+
+            Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
+            Assert.IsTrue(responseModel.Id == requestModel.Id);
+
+            Console.WriteLine(responseModel.Products.Count + " == " + requestModel.Products.Count);
+            Assert.IsTrue(responseModel.Products.Count == requestModel.Products.Count);
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 3);
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
+        }
+
+        [TestMethod]
+        public async Task Put1ProductFromControllerLessThan1Second()
+        {
+            int count = 1;
             var productsController = new ProductsController(_productRepository);
             var requestModel = new PutProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -149,7 +174,7 @@ namespace Bb.UnitTest.WebService
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.PutProducts(requestModel);
+            JsonResult result = await productsController.PutProducts(requestModel);
             sw.Stop();
 
             PutProductsResponseModel responseModel = ((PutProductsResponseModel)result.Data);
@@ -157,8 +182,8 @@ namespace Bb.UnitTest.WebService
             Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
             Assert.IsTrue(responseModel.Id == requestModel.Id);
 
-            Console.WriteLine(responseModel.Message + " == " + requestModel.Products.Count + " new products created.");
-            Assert.IsTrue(responseModel.Message == requestModel.Products.Count + " new products created.");
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 1);
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
@@ -166,16 +191,17 @@ namespace Bb.UnitTest.WebService
         }
 
         [TestMethod]
-        public void Put10000ProductsFromControllerLessThan1Second()
+        public async Task Put10000ProductsFromControllerLessThan1Second()
         {
+            int count = 10000;
             var productsController = new ProductsController(_productRepository);
             var requestModel = new PutProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -186,7 +212,7 @@ namespace Bb.UnitTest.WebService
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.PutProducts(requestModel);
+            JsonResult result = await productsController.PutProducts(requestModel);
             sw.Stop();
 
             var responseModel = ((PutProductsResponseModel)result.Data);
@@ -194,8 +220,8 @@ namespace Bb.UnitTest.WebService
             Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
             Assert.IsTrue(responseModel.Id == requestModel.Id);
 
-            Console.WriteLine(responseModel.Message + " == " + requestModel.Products.Count + " new products created.");
-            Assert.IsTrue(responseModel.Message == requestModel.Products.Count + " new products created.");
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 1);
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
@@ -203,75 +229,149 @@ namespace Bb.UnitTest.WebService
         }
 
         [TestMethod]
-        public void Delete5ProductsFromControllerLessThan1Second()
+        public async Task Put100000ProductsFromControllerLessThan3Seconds()
         {
-            Initialize5Data();
+            int count = 100000;
+            var productsController = new ProductsController(_productRepository);
+            var requestModel = new PutProductsRequestModel();
+            requestModel.Id = "123";
+            requestModel.Timestamp = DateTime.UtcNow;
+            requestModel.Products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                requestModel.Products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            JsonResult result = await productsController.PutProducts(requestModel);
+            sw.Stop();
+
+            var responseModel = ((PutProductsResponseModel)result.Data);
+
+            Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
+            Assert.IsTrue(responseModel.Id == requestModel.Id);
+
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 3);
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
+
+        }
+
+        [TestMethod]
+        public async Task Delete1ProductFromControllerLessThan1Second()
+        {
+            int count = 1;
+            await InitializeDataAsync(count);
 
             var productsController = new ProductsController(_productRepository);
             var requestModel = new DeleteProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0])
                 });
             }
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.DeleteProducts(requestModel);
+            JsonResult result = await productsController.DeleteProducts(requestModel);
             sw.Stop();
             var responseModel = ((DeleteProductsResponseModel)result.Data);
 
             Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
             Assert.IsTrue(responseModel.Id == requestModel.Id);
 
-            Console.WriteLine(responseModel.Message + " == " + requestModel.Products.Count + " new products created.");
-            Assert.IsTrue(responseModel.Message == requestModel.Products.Count + " products deleted.");
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 1);
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
         }
 
         [TestMethod]
-        public void Delete10000ProductsFromControllerLessThan1Second()
+        public async Task Delete10000ProductsFromControllerLessThan1Second()
         {
-            Initialize10000Data();
+            int count = 10000;
+            await InitializeDataAsync(count);
 
             var productsController = new ProductsController(_productRepository);
             var requestModel = new DeleteProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
             requestModel.Products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 requestModel.Products.Add(new Product
                 {
                     Id = long.Parse(data[0])
                 });
             }
             Stopwatch sw = Stopwatch.StartNew();
-            JsonResult result = productsController.DeleteProducts(requestModel);
+            JsonResult result = await productsController.DeleteProducts(requestModel);
             sw.Stop();
             var responseModel = ((DeleteProductsResponseModel)result.Data);
 
             Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
             Assert.IsTrue(responseModel.Id == requestModel.Id);
 
-            Console.WriteLine(responseModel.Message + " == " + requestModel.Products.Count + " new products created.");
-            Assert.IsTrue(responseModel.Message == requestModel.Products.Count + " products deleted.");
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 1);
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
+        }
+
+        [TestMethod]
+        public async Task Delete100000ProductsFromControllerLessThan3Seconds()
+        {
+            int count = 100000;
+            await InitializeDataAsync(count);
+
+            var productsController = new ProductsController(_productRepository);
+            var requestModel = new DeleteProductsRequestModel();
+            requestModel.Id = "123";
+            requestModel.Timestamp = DateTime.UtcNow;
+            requestModel.Products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                requestModel.Products.Add(new Product
+                {
+                    Id = long.Parse(data[0])
+                });
+            }
+            Stopwatch sw = Stopwatch.StartNew();
+            JsonResult result = await productsController.DeleteProducts(requestModel);
+            sw.Stop();
+            var responseModel = ((DeleteProductsResponseModel)result.Data);
+
+            Console.WriteLine(responseModel.Id + " == " + requestModel.Id);
+            Assert.IsTrue(responseModel.Id == requestModel.Id);
+
+            Console.WriteLine(responseModel.Message + " == Success");
+            Assert.IsTrue(responseModel.Message == "Success");
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < " + 3);
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
         }
 
         [TestCleanup]
-        public void DataCleanUp()
+        public async Task DataCleanUp()
         {
-            var deletedDataCount = _productRepository.DeleteAll();
+            var deletedDataCount = await _productRepository.DeleteAllAsync();
             Console.WriteLine("Deleted Data Count: " + deletedDataCount);
         }
     }

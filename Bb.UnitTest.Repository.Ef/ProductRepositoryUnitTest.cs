@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Bb.Data.Entities;
 using Bb.Data.Repository;
@@ -17,18 +18,20 @@ namespace Bb.UnitTest.Repository.Ef
     public class ProductRepositoryUnitTest
     {
         IProductRepository _productRepository;
+        IList<string> _dataRow;
 
         public ProductRepositoryUnitTest()
         {
             _productRepository = new ProductRepositoryEf();
+            _dataRow = File.ReadLines("ProductsData.csv").ToList();
         }
 
-        public void Initialize5Data()
+        public async Task InitializeDataAsync(int count)
         {
             List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -37,33 +40,17 @@ namespace Bb.UnitTest.Repository.Ef
                     Sale_Amount = decimal.Parse(data[3])
                 });
             }
-            _productRepository.BulkCreate(products);
-        }
-
-        public void Initialize10000Data()
-        {
-            List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
-            {
-                var data = line.Split(',');
-                products.Add(new Product
-                {
-                    Id = long.Parse(data[0]),
-                    Name = data[1],
-                    Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
-                });
-            }
-            _productRepository.BulkCreate(products);
+            await _productRepository.BulkCreateAsync(products);
         }
 
         [TestMethod]
-        public void Put5ProductsLessThen1Second()
+        public async Task Put1ProductLessThen1Second()
         {
+            int count = 1;
             List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -74,24 +61,26 @@ namespace Bb.UnitTest.Repository.Ef
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var createdProductsCount = _productRepository.BulkCreate(products);
+            await _productRepository.BulkCreateAsync(products);
             sw.Stop();
-
-            Console.WriteLine(createdProductsCount + " == " + products.Count);
-            Assert.IsTrue(createdProductsCount == products.Count);
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
 
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
         }
 
         [TestMethod]
-        public void Put10000ProductsLessThen1Second()
+        public async Task Put10ProductsLessThen1Second()
         {
+            int count = 10;
             List<Product> products = new List<Product>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 products.Add(new Product
                 {
                     Id = long.Parse(data[0]),
@@ -102,31 +91,153 @@ namespace Bb.UnitTest.Repository.Ef
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var createdProductsCount = _productRepository.BulkCreate(products);
+            await _productRepository.BulkCreateAsync(products);
             sw.Stop();
-
-            Console.WriteLine(createdProductsCount + " == " + products.Count);
-            Assert.IsTrue(createdProductsCount == products.Count);
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
 
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
         }
 
         [TestMethod]
-        public void Get5ProductsLessThen1Seconds()
+        public async Task Put100ProductsLessThen1Second()
         {
-            Initialize5Data();
+            int count = 100;
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkCreateAsync(products);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
+
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
+        }
+
+        [TestMethod]
+        public async Task Put1000ProductsLessThen1Second()
+        {
+            int count = 1000;
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkCreateAsync(products);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
+
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
+        }
+
+        [TestMethod]
+        public async Task Put10000ProductsLessThen1Second()
+        {
+            int count = 10000;
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkCreateAsync(products);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
+
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
+        }
+
+        [TestMethod]
+        public async Task Put100000ProductsLessThen3Seconds()
+        {
+            int count = 100000;
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0]),
+                    Name = data[1],
+                    Quantity = int.Parse(data[2]),
+                    Sale_Amount = decimal.Parse(data[3])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkCreateAsync(products);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 3");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
+
+            var checkProducts = await _productRepository.GetProductsAsync(products.Select(p => p.Id).ToList());
+            Console.WriteLine(checkProducts.Count + " == " + products.Count);
+            Assert.IsTrue(checkProducts.Count == products.Count);
+
+        }
+
+        [TestMethod]
+        public async Task Get1ProductLessThen1Second()
+        {
+            int count = 1;
+            await InitializeDataAsync(count);
 
             List<long> productIds = new List<long>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 productIds.Add(long.Parse(data[0]));
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var productsResult = _productRepository.GetProducts(productIds);
+            var productsResult = await _productRepository.GetProductsAsync(productIds);
             sw.Stop();
 
             Console.WriteLine(productsResult.Count() + " == " + productIds.Count);
@@ -138,19 +249,20 @@ namespace Bb.UnitTest.Repository.Ef
         }
 
         [TestMethod]
-        public void Get10000ProductsLessThen1Seconds()
+        public async Task Get10000ProductsLessThen1Second()
         {
-            Initialize10000Data();
+            int count = 10000;
+            await InitializeDataAsync(count);
 
             List<long> productIds = new List<long>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 productIds.Add(long.Parse(data[0]));
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var productsResult = _productRepository.GetProducts(productIds);
+            var productsResult = await _productRepository.GetProductsAsync(productIds);
             sw.Stop();
 
             Console.WriteLine(productsResult.Count() + " == " + productIds.Count);
@@ -162,55 +274,106 @@ namespace Bb.UnitTest.Repository.Ef
         }
 
         [TestMethod]
-        public void Delete5ProductsLessThen1Seconds()
+        public async Task Get100000ProductsLessThen3Seconds()
         {
-            Initialize5Data();
+            int count = 100000;
+            await InitializeDataAsync(count);
 
             List<long> productIds = new List<long>();
-            foreach (var line in File.ReadLines("5ProductsData.csv"))
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
+                var data = _dataRow[i].Split(',');
                 productIds.Add(long.Parse(data[0]));
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var deletedProductsCount = _productRepository.BulkDelete(productIds);
+            var productsResult = await _productRepository.GetProductsAsync(productIds);
             sw.Stop();
 
-            Console.WriteLine(deletedProductsCount + " == " + productIds.Count);
-            Assert.IsTrue(deletedProductsCount == productIds.Count);
+            Console.WriteLine(productsResult.Count() + " == " + productIds.Count);
+            Assert.IsTrue(productsResult.Count() == productIds.Count);
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 3");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
+
+        }
+
+        [TestMethod]
+        public async Task Delete1ProductsLessThen1Second()
+        {
+            int count = 1;
+            await InitializeDataAsync(count);
+
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkDeleteAsync(products);
+            sw.Stop();
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
         }
 
         [TestMethod]
-        public void Delete10000ProductsLessThen1Seconds()
+        public async Task Delete10000ProductsLessThen1Second()
         {
-            Initialize10000Data();
+            int count = 10000;
+            await InitializeDataAsync(count);
 
-            List<long> productIds = new List<long>();
-            foreach (var line in File.ReadLines("10000ProductsData.csv"))
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
             {
-                var data = line.Split(',');
-                productIds.Add(long.Parse(data[0]));
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0])
+                });
             }
 
             Stopwatch sw = Stopwatch.StartNew();
-            var deletedProductsCount = _productRepository.BulkDelete(productIds);
+            await _productRepository.BulkDeleteAsync(products);
             sw.Stop();
-
-            Console.WriteLine(deletedProductsCount + " == " + productIds.Count);
-            Assert.IsTrue(deletedProductsCount == productIds.Count);
 
             Console.WriteLine(sw.Elapsed.TotalSeconds + " < 1");
             Assert.IsTrue(sw.Elapsed.TotalSeconds < 1);
+        }
+
+        [TestMethod]
+        public async Task Delete100000ProductsLessThen3Seconds()
+        {
+            int count = 100000;
+            await InitializeDataAsync(count);
+
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < count; i++)
+            {
+                var data = _dataRow[i].Split(',');
+                products.Add(new Product
+                {
+                    Id = long.Parse(data[0])
+                });
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+            await _productRepository.BulkDeleteAsync(products);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed.TotalSeconds + " < 3");
+            Assert.IsTrue(sw.Elapsed.TotalSeconds < 3);
         }
 
         [TestCleanup]
-        public void DataCleanUp()
+        public async Task DataCleanUp()
         {
-            var deletedDataCount = _productRepository.DeleteAll();
+            var deletedDataCount = await _productRepository.DeleteAllAsync();
             Console.WriteLine("Deleted Data Count: " + deletedDataCount);
         }
     }

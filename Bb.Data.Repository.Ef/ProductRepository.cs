@@ -1,6 +1,7 @@
 ﻿using Bb.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,37 +17,44 @@ namespace Bb.Data.Repository.Ef
             _dbContext = new BbContext();
         }
 
-        public int BulkCreate(IEnumerable<Product> products)
+        public void BulkCreate(IList<Product> products)
         {
-            _dbContext.Products.AddRange(products);
-            return _dbContext.SaveChanges();
+            _dbContext.BulkInsert(products);
         }
 
-        public int BulkDelete(IEnumerable<long> productIds)
+        public async Task BulkCreateAsync(IList<Product> products)
         {
-            var totalDeletedProductsCount = 0;
-            var iteration = 1;
-            var batchCount = 2000;
-            var proccessedIds = productIds.Take(batchCount);
-            do
-            {
-                totalDeletedProductsCount += _dbContext.Products.Where(p => proccessedIds.Contains(p.Id)).Delete();
-                proccessedIds = productIds.Skip(iteration * batchCount).Take(batchCount);
-                iteration++;
-
-            } while (proccessedIds.Count() > 0);
-
-            return totalDeletedProductsCount;
+            await _dbContext.BulkInsertAsync(products);
         }
 
-        public IEnumerable<Product> GetProducts(IEnumerable<long> productIds)
+        public void BulkDelete(IList<Product> products)
         {
-            return _dbContext.Products.Where(p => productIds.Contains(p.Id));
+            _dbContext.BulkDelete(products);
+        }
+
+        public async Task BulkDeleteAsync(IList<Product> products)
+        {
+            await _dbContext.BulkDeleteAsync(products);
+        }
+
+        public IList<Product> GetProducts(IList<long> productIds)
+        {
+            return _dbContext.Products.Where(p => productIds.Contains(p.Id)).ToList();
+        }
+
+        public async Task<IList<Product>> GetProductsAsync(IList<long> productIds)
+        {
+            return await _dbContext.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
         }
 
         public int DeleteAll()
         {
             return _dbContext.Products.Delete();
+        }
+
+        public async Task<int> DeleteAllAsync()
+        {
+            return await _dbContext.Products.DeleteAsync();
         }
     }
 }
