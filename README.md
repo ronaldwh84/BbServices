@@ -11,7 +11,7 @@ This is a very simple web service for inserting and retrieving products informat
 * Pull the master branch.
 * Setup the Database following the **Database Configuration** section.
 * Open the BbServices.sln on Visual Studio.
-* Restore the NuGet Packages.
+* Restore the solution's NuGet Packages.
 * Rebuild all the projects.
 * Run the Bb.WebService.
 * The web service will run under IISExpress with url 'http://localhost:5709/'
