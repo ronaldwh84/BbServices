@@ -62,7 +62,7 @@ Before you run the unit testing, update the ConnectionString section on the App.
 
 To run the Unit Test:
 * Open the Test Explorer
-* Right click the Test that you want to run and choose 'Run Selected Tests'
+* Right click the Test that you want to run and choose 'Run Selected Tests' OR just click the 'Run All' to start all tests.
 
 ### Projects Structure ###
 - Data
