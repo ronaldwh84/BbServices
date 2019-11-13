@@ -60,6 +60,10 @@ For each function and action, we are testing with different number of product. B
 
 Before you run the unit testing, update the ConnectionString section on the App.Config of the Bb.WebService project to match your own MSSQL Server and credential, similar to the one on the **Database Configuration** section.
 
+To run the Unit Test:
+* Open the Test Explorer
+* Right click the Test that you want to run and choose 'Run Selected Tests'
+
 ### Projects Structure ###
 - Data
   - Bb.Data
