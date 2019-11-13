@@ -11,9 +11,9 @@ This is a very simple web service for inserting and retrieving products informat
 * Pull the master branch.
 * Setup the Database following the **Database Configuration** section.
 * Open the BbServices.sln on Visual Studio.
-* Restore the NuGet Packages.
-* Rebuild all the projects.
-* Run the Bb.WebService.
+* Restore the solution's NuGet Packages.
+* Rebuild the solution.
+* Set Bb.WebService as Startup Project and Start it.
 * The web service will run under IISExpress with url 'http://localhost:5709/'
 
 Authentication:
@@ -33,7 +33,7 @@ These are the 3 endpoints available.
 To make your life easier you can import the Postman collection to start testing the Web Services. The script is located at the **Scripts** folder with name **BbService.postman_collection.json**
 
 ### Database Configuration ###
-* Run the DatabaseScript.sql in the Scripts folder on MSSQL Server. This script will create the database called BbDb with 1 table named Product
+* Run the **DatabaseScript.sql** in the **Scripts** folder on MSSQL Server. This script will create the database called **BbDb** with 1 table named **Product**
 * Update the ConnectionString section on the Web.Config of the Bb.WebService project to match your own MSSQL Server and credential
 The sample below is using SQL Express on the localhost:
 
