@@ -6,7 +6,7 @@
 
 This is a very simple web service for inserting and retrieving products information.
 
-### How do I get set up? ###
+### How to run the application ###
 
 * Pull this source code.
 * Setup the Database following the **Database Configuration** section.
@@ -14,6 +14,23 @@ This is a very simple web service for inserting and retrieving products informat
 * Restore the NuGet Packages.
 * Rebuild all the projects.
 * Run the Bb.WebService.
+* The web service will run under IISExpress with url 'http://localhost:5709/'
+
+Authentication:
+<br>
+All the endpoints are secured using the Basic Authentication.
+<br>
+username: BbWsUserName
+<br>
+password: BbWsP@ssword!
+<br>
+
+These are the 3 endpoints available.
+* http://localhost:5709/Products/PutProducts
+* http://localhost:5709/Products/GetProducts
+* http://localhost:5709/Products/DeleteProducts
+
+To make your life easier you can import the Postman collection to start testing the Web Services. The script is located at the **Scripts** folder with name **BbService.postman_collection.json**
 
 ### Database Configuration ###
 * Run the DatabaseScript.sql in the Scripts folder on MSSQL Server. This script will create the database called BbDb with 1 table named Product
