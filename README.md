@@ -4,7 +4,7 @@
 
 ### What is this repository for? ###
 
-This is a very simple web service for inserting and retrieving products information.
+This is a very simple web service for inserting and retrieving products information. I don't cover the step to deploy this to a real server but I assume this code will be run using the Visual Studio with IISExpress as the web server.
 
 ### How to run the application ###
 
