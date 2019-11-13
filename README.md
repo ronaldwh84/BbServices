@@ -8,7 +8,7 @@ This is a very simple web service for inserting and retrieving products informat
 
 ### How to run the application ###
 
-* Pull this source code.
+* Pull the master branch.
 * Setup the Database following the **Database Configuration** section.
 * Open the BbServices.sln on Visual Studio.
 * Restore the NuGet Packages.
