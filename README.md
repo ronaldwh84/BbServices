@@ -6,6 +6,8 @@
 
 This is a very simple web service for inserting and retrieving products information. I don't cover the step to deploy this to a real server but I assume this code will be run using the Visual Studio with IISExpress as the web server.
 
+This code is tested under localhost environment with SQL Express as the database. The better way is to deploy this to a real server with MSSQL Server. But again, this is not the scope for now.
+
 ### How to run the application ###
 
 * Pull the master branch.
