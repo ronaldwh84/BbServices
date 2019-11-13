@@ -35,6 +35,9 @@ These are the 3 endpoints available.
 
 To make your life easier you can import the Postman collection to start testing the Web Services. The script is located at the **Scripts** folder with name **BbService.postman_collection.json**
 
+### Exception Log ###
+To make it easier to indentify any exception I log the exception caught to the **logs\webservice.log** file under the Bb.WebService project. When there is any exception caught the API will show the Reference Id in the **Message** field of the response where we can search the id on the log file to get more details on the exception.
+
 ### Database Configuration ###
 * Run the **DatabaseScript.sql** in the **Scripts** folder on MSSQL Server. This script will create the database called **BbDb** with 1 table named **Product**
 * Update the ConnectionString section on the Web.Config of the Bb.WebService project to match your own MSSQL Server and credential
