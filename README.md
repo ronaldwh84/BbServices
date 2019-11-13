@@ -4,9 +4,7 @@
 
 ### What is this repository for? ###
 
-* This is a web service for inserting and retrieving products information.
-* Version
-* [Learn Markdown](https://github.com/ronaldwh84/BbServices)
+This is a very simple web service for inserting and retrieving products information.
 
 ### How do I get set up? ###
 
