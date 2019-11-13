@@ -6,6 +6,7 @@ using Bb.WebService.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -38,6 +39,13 @@ namespace Bb.WebService.Controllers
             {
                 await _productRepository.BulkCreateAsync(requestModel.Products);
                 responseModel.Message = "Success";
+            }
+            catch (DuplicatedIdException ex)
+            {
+                var tick = requestModel.Id + DateTime.UtcNow.Ticks;
+                _logger.Error(tick);
+                _logger.Error(ex);
+                responseModel.Message = "Failed. " + ex.Message + ". Reference Id: " + tick;
             }
             catch (Exception ex)
             {
