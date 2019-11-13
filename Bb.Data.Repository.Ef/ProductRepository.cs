@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,34 @@ namespace Bb.Data.Repository.Ef
 
         public void BulkCreate(IList<Product> products)
         {
-            _dbContext.BulkInsert(products);
+            try
+            {
+                _dbContext.BulkInsert(products);
+            }
+            catch (Exception ex)
+            {
+                if (ex is SqlException && ex.Message.Contains("Violation of PRIMARY KEY"))
+                {
+                    throw new DuplicatedIdException("Duplicated Id detected");
+                }
+                throw;
+            }
         }
 
         public async Task BulkCreateAsync(IList<Product> products)
         {
-            await _dbContext.BulkInsertAsync(products);
+            try
+            {
+                await _dbContext.BulkInsertAsync(products);
+            }
+            catch (Exception ex)
+            {
+                if (ex is SqlException && ex.Message.Contains("Violation of PRIMARY KEY"))
+                {
+                    throw new DuplicatedIdException("Duplicated Id detected");
+                }
+                throw;
+            }
         }
 
         public void BulkDelete(IList<Product> products)
