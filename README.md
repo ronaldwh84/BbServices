@@ -17,6 +17,8 @@ This is a very simple web service for inserting and retrieving products informat
 * Start the solution (by default it will open the IISExpress).
 * The web service will run under IISExpress with url 'http://localhost:5709/'
 
+*You may experience an issue where you see an error page with message 'Could not find file '...\BbServices\Bb.WebService\bin\roslyn\csc.exe'.' Simply clear the solution and rebuild it again and try to start it again
+
 Authentication:
 <br>
 All the endpoints are secured using the Basic Authentication.
