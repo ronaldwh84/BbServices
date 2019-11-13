@@ -13,7 +13,7 @@ This is a very simple web service for inserting and retrieving products informat
 * Open the BbServices.sln on Visual Studio.
 * Restore the solution's NuGet Packages.
 * Rebuild the solution.
-* Run the Bb.WebService.
+* Set Bb.WebService as Startup Project and Start it.
 * The web service will run under IISExpress with url 'http://localhost:5709/'
 
 Authentication:
