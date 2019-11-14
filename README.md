@@ -74,7 +74,8 @@ To run the Unit Test:
 - Presentation
   - Bb.WebService
     <br>This project contains the implementation of the web service using ASP.NET MVC framework.
-    <br>We implement IOC using the StructureMap library to make it more flexible for us to switch to another repository implementation in the future. For example, if we want to switch from Entity Framework to NHibernate.
+    <br>We implement IOC using the StructureMap library to make it more flexible for us to switch to another repository implementation in the future. For example, if we want to switch from Entity Framework to NHibernate. We can see the mapping configuration at this file **DefaultRegistry.cs**.
+    <br>Automapper is used to map the view model with the entity.
 - UnitTest
   - Bb.UnitTest.Data.Repository.Ef
     <br>This is the Unit Test for the repository implementation on Bb.Data.Repository.Ef project.
