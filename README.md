@@ -90,4 +90,5 @@ The asynchronous approach may not make any sense as for now but in the future wh
 * .NET Framework 4.7.2
 * Entity Framework 6.3.0
 * StructureMap
+* Automapper
 
