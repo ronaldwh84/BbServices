@@ -16,5 +16,15 @@ namespace Bb.WebService.Models
 
         [JsonProperty("message")]
         public string Message { get; set; }
+
+        [JsonProperty("response_code")]
+        public ResponseCode ResponseCode { get; set; }
+    }
+
+    public enum ResponseCode
+    {
+        SUCCESS = 1,
+        GENERAL_ERROR = 0,
+        DUPLICATED_ID = 1001
     }
 }
