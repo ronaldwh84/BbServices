@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Bb.Data.Entities
 {
+    /// <summary>
+    /// This is the model for table Product 
+    /// </summary>
     public class Product
     {
         [Key]

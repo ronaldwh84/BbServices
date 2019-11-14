@@ -17,6 +17,11 @@ using System.Web.Mvc;
 
 namespace Bb.WebService.Controllers
 {
+    /// <summary>
+    /// The asynchronous approach may not make any sense as for now but in the future when we need to perform some other 
+    /// operations (e.g. tracking requests parameters, sending data to analytics service) the asynchronous approach will 
+    /// give more benefits
+    /// </summary>
     public class ProductsController : Controller
     {
         private IProductRepository _productRepository;
