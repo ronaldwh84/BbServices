@@ -22,7 +22,7 @@ This code is tested under the localhost environment with SQL Express as the data
 
 *You may experience an issue where you see an error page with the message 'Could not find file '...\BbServices\Bb.WebService\bin\roslyn\csc.exe'.' Simply clear, rebuild and start the solution again*
 
-Authentication:
+**Authentication:**
 <br>
 All the endpoints are secured using the Basic Authentication.
 <br>
