@@ -82,6 +82,9 @@ To run the Unit Test:
   - Bb.UnitTest.WebService
     <br>This is the Unit Test for the web service implementation on Bb.WebService.
   
+### Asynchronous Approach ###
+The asynchronous approach may not make any sense as for now but in the future when we need to perform some other operations (e.g. tracking requests parameters, sending data to analytics service) the asynchronous approach will give more benefits.
+
 ### Technology Stacks ###
 * ASP.NET MVC
 * .NET Framework 4.7.2
