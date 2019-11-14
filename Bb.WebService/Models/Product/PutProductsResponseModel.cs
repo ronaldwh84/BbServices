@@ -1,4 +1,5 @@
 ﻿using Bb.Data.Entities;
+using Bb.WebService.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Bb.WebService.Models
     public class PutProductsResponseModel : BaseResponseModel
     {
         [JsonProperty("products")]
-        public IList<Product> Products { get; set; }
+        public IList<ProductModel> Products { get; set; }
     }
 }

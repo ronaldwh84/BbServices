@@ -14,9 +14,11 @@ namespace Bb.Data.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; }
+
         public string Name { get; set; }
+
         public int Quantity { get; set; }
-        [Column("SaleAmount")]
-        public decimal Sale_Amount { get; set; }
+
+        public decimal SaleAmount { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace Bb.WebService.Models
     public class DeleteProductsResponseModel : BaseResponseModel
     {
         [JsonProperty("products")]
-        public IList<Product> Products { get; set; }
+        public IList<ProductModel> Products { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Bb.Data;
+﻿using AutoMapper;
+using Bb.Data;
+using Bb.Data.Entities;
 using Bb.Data.Repository;
 using Bb.Data.Repository.Ef;
 using Bb.WebService.Filters;
@@ -19,13 +21,15 @@ namespace Bb.WebService.Controllers
     {
         private IProductRepository _productRepository;
         private ILog _logger;
+        private IMapper _mapper;
         // GET: Products
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, ILog logger, IMapper mapper)
         {
 
             _productRepository = productRepository;
-            _logger = LogManager.GetLogger("bb.webservice");
+            _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -37,8 +41,9 @@ namespace Bb.WebService.Controllers
 
             try
             {
-                await _productRepository.BulkCreateAsync(requestModel.Products);
+                await _productRepository.BulkCreateAsync(_mapper.Map<IList<ProductModel>,IList<Product>>(requestModel.Products));
                 responseModel.Message = "Success";
+                responseModel.ResponseCode = ResponseCode.SUCCESS;
             }
             catch (DuplicatedIdException ex)
             {
@@ -46,6 +51,7 @@ namespace Bb.WebService.Controllers
                 _logger.Error(tick);
                 _logger.Error(ex);
                 responseModel.Message = "Failed. " + ex.Message + ". Reference Id: " + tick;
+                responseModel.ResponseCode = ResponseCode.DUPLICATED_ID;
             }
             catch (Exception ex)
             {
@@ -53,6 +59,7 @@ namespace Bb.WebService.Controllers
                 _logger.Error(tick);
                 _logger.Error(ex);
                 responseModel.Message = "Failed. Reference Id: " + tick;
+                responseModel.ResponseCode = ResponseCode.GENERAL_ERROR;
             }
 
             responseModel.Id = requestModel.Id;
@@ -70,8 +77,9 @@ namespace Bb.WebService.Controllers
 
             try
             {
-                await _productRepository.BulkDeleteAsync(requestModel.Products);
+                await _productRepository.BulkDeleteAsync(_mapper.Map<IList<ProductModel>, IList<Product>>(requestModel.Products));
                 responseModel.Message = "Success";
+                responseModel.ResponseCode = ResponseCode.SUCCESS;
             }
             catch (Exception ex)
             {
@@ -79,6 +87,7 @@ namespace Bb.WebService.Controllers
                 _logger.Error(tick);
                 _logger.Error(ex);
                 responseModel.Message = "Failed. Reference Id: " + tick;
+                responseModel.ResponseCode = ResponseCode.GENERAL_ERROR;
             }
 
             responseModel.Id = requestModel.Id;
@@ -96,8 +105,10 @@ namespace Bb.WebService.Controllers
 
             try
             {
-                responseModel.Products = await _productRepository.GetProductsAsync(requestModel.Products.Select(p => p.Id).ToList());
+                var productsResult = await _productRepository.GetProductsAsync(requestModel.Products.Select(a => a.Id).ToList());
+                responseModel.Products = _mapper.Map<IList<Product>, IList<ProductModel>>(productsResult);
                 responseModel.Message = responseModel.Products.Count() + " products retrieved.";
+                responseModel.ResponseCode = ResponseCode.SUCCESS;
             }
             catch (Exception ex)
             {
@@ -105,6 +116,7 @@ namespace Bb.WebService.Controllers
                 _logger.Error(tick);
                 _logger.Error(ex);
                 responseModel.Message = "Failed. Reference Id: " + tick;
+                responseModel.ResponseCode = ResponseCode.GENERAL_ERROR;
             }
 
             responseModel.Id = requestModel.Id;
