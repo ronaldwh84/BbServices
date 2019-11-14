@@ -38,7 +38,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
             await _productRepository.BulkCreateAsync(products);
@@ -57,7 +57,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -87,7 +87,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -117,7 +117,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -147,7 +147,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -177,7 +177,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -207,7 +207,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 
@@ -237,7 +237,7 @@ namespace Bb.UnitTest.Repository.Ef
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
 

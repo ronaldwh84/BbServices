@@ -15,26 +15,40 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Bb.WebService.DependencyResolution {
+namespace Bb.WebService.DependencyResolution
+{
+    using AutoMapper;
+    using Bb.Data.Entities;
     using Bb.Data.Repository;
     using Bb.Data.Repository.Ef;
+    using Bb.WebService.Models;
     using log4net;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
-	
-    public class DefaultRegistry : Registry {
+    using System.Collections.Generic;
+
+    public class DefaultRegistry : Registry
+    {
         #region Constructors and Destructors
 
-        public DefaultRegistry() {
+        public DefaultRegistry()
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ProductModel, Product>().ForMember(dest => dest.SaleAmount, opt => opt.MapFrom(src => src.Sale_Amount));
+                cfg.CreateMap<Product, ProductModel>().ForMember(dest => dest.Sale_Amount, opt => opt.MapFrom(src => src.SaleAmount));
+            });
+
             Scan(
-                scan => {
+                scan =>
+                {
                     scan.TheCallingAssembly();
                     scan.WithDefaultConventions();
-					scan.With(new ControllerConvention());
+                    scan.With(new ControllerConvention());
                 });
             //For<IExample>().Use<Example>();
             For<IProductRepository>().Use<ProductRepositoryEf>();
             For<ILog>().Use(() => LogManager.GetLogger("Bb.WebService"));
+            For<IMapper>().Use(() => new Mapper(config));
         }
 
         #endregion

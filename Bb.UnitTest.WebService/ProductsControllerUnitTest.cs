@@ -12,6 +12,8 @@ using Bb.Data.Repository;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
+using AutoMapper;
 
 namespace Bb.UnitTest.WebService
 {
@@ -22,6 +24,8 @@ namespace Bb.UnitTest.WebService
     public class ProductsControllerUnitTest
     {
         IProductRepository _productRepository;
+        private ILog _logger;
+        private IMapper _mapper;
         IList<string> _dataRow;
 
         public ProductsControllerUnitTest()
@@ -30,6 +34,15 @@ namespace Bb.UnitTest.WebService
             // TODO: Add constructor logic here
             //
             _productRepository = new ProductRepositoryEf();
+
+            log4net.Config.XmlConfigurator.Configure();
+            _logger = LogManager.GetLogger("ProductsControllerUnitTest");
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ProductModel, Product>().ForMember(dest => dest.SaleAmount, opt => opt.MapFrom(src => src.Sale_Amount));
+                cfg.CreateMap<Product, ProductModel>().ForMember(dest => dest.Sale_Amount, opt => opt.MapFrom(src => src.SaleAmount));
+            });
+            _mapper = new Mapper(config);
             _dataRow = File.ReadLines("ProductsData.csv").ToList();
         }
 
@@ -44,7 +57,7 @@ namespace Bb.UnitTest.WebService
                     Id = long.Parse(data[0]),
                     Name = data[1],
                     Quantity = int.Parse(data[2]),
-                    Sale_Amount = decimal.Parse(data[3])
+                    SaleAmount = decimal.Parse(data[3])
                 });
             }
             await _productRepository.BulkCreateAsync(products);
@@ -56,15 +69,15 @@ namespace Bb.UnitTest.WebService
             int count = 10;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+            var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new GetProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
@@ -90,15 +103,15 @@ namespace Bb.UnitTest.WebService
             int count = 10000;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new GetProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
@@ -124,15 +137,15 @@ namespace Bb.UnitTest.WebService
             int count = 100000;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new GetProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
@@ -156,15 +169,15 @@ namespace Bb.UnitTest.WebService
         public async Task Put10ProductFromControllerLessThan1Second()
         {
             int count = 10;
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new PutProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0]),
                     Name = data[1],
@@ -194,15 +207,15 @@ namespace Bb.UnitTest.WebService
         public async Task Put10000ProductsFromControllerLessThan2Seconds()
         {
             int count = 10000;
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new PutProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0]),
                     Name = data[1],
@@ -232,15 +245,15 @@ namespace Bb.UnitTest.WebService
         public async Task Put100000ProductsFromControllerLessThan3Seconds()
         {
             int count = 100000;
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new PutProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0]),
                     Name = data[1],
@@ -272,15 +285,15 @@ namespace Bb.UnitTest.WebService
             int count = 10;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new DeleteProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
@@ -306,15 +319,15 @@ namespace Bb.UnitTest.WebService
             int count = 10000;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new DeleteProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
@@ -340,15 +353,15 @@ namespace Bb.UnitTest.WebService
             int count = 100000;
             await InitializeDataAsync(count);
 
-            var productsController = new ProductsController(_productRepository);
+                        var productsController = new ProductsController(_productRepository, _logger, _mapper);
             var requestModel = new DeleteProductsRequestModel();
             requestModel.Id = "123";
             requestModel.Timestamp = DateTime.UtcNow;
-            requestModel.Products = new List<Product>();
+            requestModel.Products = new List<ProductModel>();
             for (int i = 0; i < count; i++)
             {
                 var data = _dataRow[i].Split(',');
-                requestModel.Products.Add(new Product
+                requestModel.Products.Add(new ProductModel
                 {
                     Id = long.Parse(data[0])
                 });
