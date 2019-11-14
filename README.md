@@ -26,9 +26,9 @@ This code is tested under the localhost environment with SQL Express as the data
 <br>
 All the endpoints are secured using the Basic Authentication.
 <br>
-username: BbWsUserName
+Username: BbWsUserName
 <br>
-password: BbWsP@ssword!
+Password: BbWsP@ssword!
 <br>
 
 These are the 3 endpoints available.
